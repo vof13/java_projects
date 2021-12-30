@@ -5,16 +5,13 @@ public class Main {
     public static void main(String[] args) {
 
         Computer computer = new Computer("Dell", "My computer");
-        Processor processor = new Processor(1500, 4, "Intel", 100);
-        Ram ram = new Ram("ram", 2000, 200);
-        Storage storage = new Storage("HDD", 3000, 300);
-        Screen screen = new Screen(18.5, "IPS", 400);
-        Keyboard keyboard = new Keyboard("notebook", "YES", 50);
-        computer.setProcessor(processor);
-        computer.setRam(ram);
-        computer.setStorage(storage);
-        computer.setScreen(screen);
-        computer.setKeyboard(keyboard);
+
+        computer.setProcessor(new Processor(1500, 4, ProcessorManufacturer.AMD, 100));
+        computer.setRam(new Ram(RamType.LR_DIMM, 2000, 200));
+        computer.setStorage(new Storage(StorageType.SSD, 3000, 300));
+        computer.setScreen(new Screen(18.5, ScreenType.IPS, 400));
+        computer.setKeyboard(new Keyboard(KeyboardType.COMPACT, "YES", 50));
+
 
         System.out.println(computer.totalWeight());
         computer.allInformation();
