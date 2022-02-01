@@ -1,8 +1,8 @@
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -10,9 +10,9 @@ public class Employee {
 
   private String name;
   private Integer salary;
-  private Date workStart;
+  private LocalDate workStart;
 
-  public Employee(String name, Integer salary, Date workStart) {
+  public Employee(String name, Integer salary, LocalDate workStart) {
     this.name = name;
     this.salary = salary;
     this.workStart = workStart;
@@ -32,7 +32,7 @@ public class Employee {
         staff.add(new Employee(
             fragments[0],
             Integer.parseInt(fragments[1]),
-            (new SimpleDateFormat(dateFormat)).parse(fragments[2])
+            LocalDate.parse(fragments[2], DateTimeFormatter.ofPattern(dateFormat))
         ));
       }
     } catch (Exception ex) {
@@ -57,17 +57,17 @@ public class Employee {
     this.salary = salary;
   }
 
-  public Date getWorkStart() {
+  public LocalDate getWorkStart() {
     return workStart;
   }
 
-  public void setWorkStart(Date workStart) {
+  public void setWorkStart(LocalDate workStart) {
     this.workStart = workStart;
   }
 
   public String toString() {
-    return name + " - " + salary + " - " +
-        (new SimpleDateFormat("dd.MM.yyyy")).format(workStart);
+    return name + " - " + salary + " - " + workStart.toString();
+
   }
 
   @Override
