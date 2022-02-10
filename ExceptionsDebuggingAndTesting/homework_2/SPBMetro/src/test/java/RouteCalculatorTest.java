@@ -1,7 +1,6 @@
 import core.Line;
 import core.Station;
 import junit.framework.TestCase;
-import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 
 import java.util.ArrayList;
@@ -11,7 +10,7 @@ public class RouteCalculatorTest extends TestCase {
 
 
     List<Station> route;
-    private  StationIndex stationIndex = new StationIndex();
+    private final StationIndex stationIndex = new StationIndex();
     RouteCalculator calculator;
 
 
@@ -33,20 +32,19 @@ public class RouteCalculatorTest extends TestCase {
 
 
         addConnections();
-         calculator= new  RouteCalculator(stationIndex);
+        calculator= new  RouteCalculator(stationIndex);
     }
 
     private void addConnections() {
-        List<Station> connectionStations = new ArrayList<>();
-        connectionStations.add(stationIndex.getStation("Московская", 1));
-        connectionStations.add(stationIndex.getStation("Ленинградская", 1));
+        List<Station> connectionStations1 = new ArrayList<>();
+        connectionStations1.add(stationIndex.getStation("Венская", 1));
+        connectionStations1.add(stationIndex.getStation("Омская", 2));
+        stationIndex.addConnection(connectionStations1);
 
-        connectionStations.add(stationIndex.getStation("Омская", 2));
-        connectionStations.add(stationIndex.getStation("Севастопольская", 2));
-
-        connectionStations.add(stationIndex.getStation("Брестская", 3));
-        connectionStations.add(stationIndex.getStation("Витебская", 3));
-        stationIndex.addConnection(connectionStations);
+        List<Station> connectionStations2 = new ArrayList<>();
+        connectionStations2.add(stationIndex.getStation("Севастопольская", 2));
+        connectionStations2.add(stationIndex.getStation("Брестская", 3));
+        stationIndex.addConnection(connectionStations2);
     }
 
     private void addNewStation(String name, int number) {
@@ -97,34 +95,65 @@ public class RouteCalculatorTest extends TestCase {
         expected.add(new Station("Московская", stationIndex.getLine(1)));
         assertEquals(expected, actual);
     }
-
-    @DisplayName("Маршрут две ветка с одной пересадкой ")
+    @DisplayName("Маршрут две ветки с одной пересадкой ")
     public void testCalculateRouteTwoLine () {
-        setUp();
-        Station from = new Station("Венская", stationIndex.getLine(1));
+        Station from = new Station("Московская", stationIndex.getLine(1));
         Station to = new Station("Гомельская", stationIndex.getLine(2));
         List<Station> actual = calculator.getShortestRoute(from, to);
         List<Station> expected = new ArrayList<>();
-        expected.add(new Station("Венская", stationIndex.getLine(1)));
         expected.add(new Station("Московская", stationIndex.getLine(1)));
-        expected.add(new Station("Севастопольская", stationIndex.getLine(2)));
+        expected.add(new Station("Венская", stationIndex.getLine(1)));
+        expected.add(new Station("Омская", stationIndex.getLine(2)));
+        expected.add(new Station("Минская", stationIndex.getLine(2)));
         expected.add(new Station("Гомельская", stationIndex.getLine(2)));
 
         assertEquals(expected, actual);
     }
 
-    @DisplayName("Время маршрута две ветка с одной пересадкой ")
+    @DisplayName("Время маршрута две ветки с одной пересадкой ")
     public void testCalculateDurationTwoLine(){
-        Station from = new Station("Венская", stationIndex.getLine(1));
+        Station from = new Station("Московская", stationIndex.getLine(1));
         Station to = new Station("Гомельская", stationIndex.getLine(2));
         route = calculator.getShortestRoute(from, to);
         double actual = RouteCalculator.calculateDuration(route);
-        double expected = 8.5;
+        double expected = 11;
         assertEquals(expected, actual);
     }
+
+    @DisplayName("Время маршрута ТРИ ветки с ДВУМЯ пересадками ")
+    public void testCalculateDurationThreeLine(){
+        Station from = new Station("Московская", stationIndex.getLine(1));
+        Station to = new Station("Витебская", stationIndex.getLine(3));
+        route = calculator.getShortestRoute(from, to);
+        double actual = RouteCalculator.calculateDuration(route);
+        double expected = 19.5;
+        assertEquals(expected, actual);
+    }
+
+    @DisplayName("Маршрут ТРИ ветки с ДВУМЯ пересадками ")
+    public void testCalculateRouteThreeLine () {
+        Station from = new Station("Московская", stationIndex.getLine(1));
+        Station to = new Station("Витебская", stationIndex.getLine(3));
+        List<Station> actual = calculator.getShortestRoute(from, to);
+        List<Station> expected = new ArrayList<>();
+        expected.add(new Station("Московская", stationIndex.getLine(1)));
+        expected.add(new Station("Венская", stationIndex.getLine(1)));
+        expected.add(new Station("Омская", stationIndex.getLine(2)));
+        expected.add(new Station("Минская", stationIndex.getLine(2)));
+        expected.add(new Station("Гомельская", stationIndex.getLine(2)));
+        expected.add(new Station("Севастопольская", stationIndex.getLine(2)));
+        expected.add(new Station("Брестская", stationIndex.getLine(3)));
+        expected.add(new Station("Витебская", stationIndex.getLine(3)));
+
+
+        assertEquals(expected, actual);
+    }
+
+
 
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
 }
+
