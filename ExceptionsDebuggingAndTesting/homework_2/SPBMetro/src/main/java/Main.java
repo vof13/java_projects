@@ -1,9 +1,12 @@
 import core.Line;
 import core.Station;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -11,6 +14,10 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
+
+    private static Logger searchLogger;
+    private static Logger inputErrorsLogger;
+    private static Logger exceptionsLogger;
     private static final String DATA_FILE = "D:\\java_projects\\skillbox\\java_basics\\ExceptionsDebuggingAndTesting" +
             "\\homework_2\\SPBMetro\\src\\main\\resources\\map.json";
     private static Scanner scanner;
@@ -18,6 +25,11 @@ public class Main {
     private static StationIndex stationIndex;
 
     public static void main(String[] args) {
+        searchLogger = LogManager.getLogger("search");
+        inputErrorsLogger = LogManager.getLogger("input_errors");
+        exceptionsLogger = LogManager.getLogger("exceptions");
+
+
         RouteCalculator calculator = getRouteCalculator();
 
         System.out.println("Программа расчёта маршрутов метрополитена Санкт-Петербурга\n");
@@ -58,13 +70,19 @@ public class Main {
 
     private static Station takeStation(String message) {
         for (; ; ) {
-            System.out.println(message);
-            String line = scanner.nextLine().trim();
-            Station station = stationIndex.getStation(line);
-            if (station != null) {
-                return station;
+            try {
+                System.out.println(message);
+                String line = scanner.nextLine().trim();
+                Station station = stationIndex.getStation(line);
+                if (station != null) {
+                    searchLogger.info(station);
+                    return station;
+                }
+                System.out.println("Станция не найдена :(");
+                inputErrorsLogger.warn(line);
+            } catch (Exception e) {
+                exceptionsLogger.error("RunTime Exception: " + e, e);
             }
-            System.out.println("Станция не найдена :(");
         }
     }
 
