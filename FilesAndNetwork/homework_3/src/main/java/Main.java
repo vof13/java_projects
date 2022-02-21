@@ -1,7 +1,6 @@
 
 public class Main {
-    final static String PATH = "D:\\java_projects\\skillbox\\" +
-            "java_basics\\FilesAndNetwork\\files\\movementList.csv";
+    final static String PATH = "D:\\skilbox\\java_basics\\FilesAndNetwork\\files\\movementList.csv";
 
     public static void main(String[] args) {
         Movements movements = new Movements(PATH);
@@ -10,8 +9,9 @@ public class Main {
         System.out.println("Суммы расходов по организациям: ");
         movements.ExpenseSharing();
 
+        System.out.println("Суммы доходов по организациям: ");
+        movements.IncomeSharing();
+
 
     }
-
-
 }

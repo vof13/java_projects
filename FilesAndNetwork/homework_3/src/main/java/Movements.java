@@ -3,6 +3,7 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Movements {
     private static List<Transactions> transactionsList;
@@ -42,30 +43,49 @@ public class Movements {
                 .filter(income -> income > 0).sum();
     }
 
+    private String getNameOrganization (Transactions transaction) {
+        String operationInfo =  transaction.getOperationInfo();
+        int beginIndex = operationInfo.indexOf('/')+1;
+        if (beginIndex == 0) {
+            beginIndex = operationInfo.indexOf('\\')+1;
+        }
+        int endIndex = operationInfo.indexOf("  ", beginIndex);
+       return operationInfo.substring(beginIndex, endIndex);
+    }
+
+    public void IncomeSharing() {
+        Map<String, Double> incomeSharing;
+
+        incomeSharing = transactionsList.stream()
+                .collect(Collectors.toMap(
+                        this::getNameOrganization,
+                        Transactions::getIncomeAndExpense,
+                        Double::sum));
+
+        for (Map.Entry entry : incomeSharing.entrySet()
+        ) {
+            System.out.println(entry.getKey() + "\t" + entry.getValue());
+        }
+
+    }
+
     public void ExpenseSharing() {
         Map<String, Double> expenseSharingMap = new HashMap<>();
-
         for (Transactions transaction : transactionsList
         ) {
-            String operationInfo = transaction.getOperationInfo();
-            int beginIndex = operationInfo.indexOf('/')+1;
-            if (beginIndex == 0) {
-                beginIndex = operationInfo.indexOf('\\')+1;
-            }
-            int endIndex = operationInfo.indexOf("  ", beginIndex);
-            operationInfo  = operationInfo.substring(beginIndex, endIndex);
+            String nameOrganization = getNameOrganization(transaction);
             double expense = transaction.getIncomeAndExpense();
 
-            if (expenseSharingMap.containsKey(operationInfo) && expense < 0) {
-                double value = expenseSharingMap.get(operationInfo) + (-expense);
-                expenseSharingMap.put(operationInfo, value);
+            if (expenseSharingMap.containsKey(nameOrganization) && expense < 0) {
+                double value = expenseSharingMap.get(nameOrganization) + (-expense);
+                expenseSharingMap.put(nameOrganization, value);
             } else if (expense < 0) {
-                expenseSharingMap.put(operationInfo, -expense);
+                expenseSharingMap.put(nameOrganization, -expense);
             }
         }
 
         for (Map.Entry entry : expenseSharingMap.entrySet()
-             ) {
+        ) {
             System.out.println(entry.getKey() + "\t" + entry.getValue());
         }
     }
