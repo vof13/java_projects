@@ -57,6 +57,7 @@ public class Movements {
         Map<String, Double> incomeSharing;
 
         incomeSharing = transactionsList.stream()
+//                .filter(e -> e.getIncomeAndExpense() > 0)
                 .collect(Collectors.toMap(
                         this::getNameOrganization,
                         Transactions::getIncomeAndExpense,
