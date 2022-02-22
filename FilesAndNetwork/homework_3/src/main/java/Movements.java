@@ -54,19 +54,13 @@ public class Movements {
     }
 
     public void IncomeSharing() {
-        Map<String, Double> incomeSharing;
-
-        incomeSharing = transactionsList.stream()
-//                .filter(e -> e.getIncomeAndExpense() > 0)
+        transactionsList.stream()
+                .filter(e -> e.getIncomeAndExpense() > 0)
                 .collect(Collectors.toMap(
                         this::getNameOrganization,
                         Transactions::getIncomeAndExpense,
-                        Double::sum));
-
-        for (Map.Entry entry : incomeSharing.entrySet()
-        ) {
-            System.out.println(entry.getKey() + "\t" + entry.getValue());
-        }
+                        Double::sum))
+                .forEach((key, value) -> System.out.println(key + " - " + value));
 
     }
 
