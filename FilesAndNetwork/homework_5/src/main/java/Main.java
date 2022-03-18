@@ -13,12 +13,12 @@ import java.util.*;
 public class Main {
 
     private static final String pathSource = "https://skillbox-java.github.io/";
-    private static final String pathTarget = "D:\\java_projects\\skillbox\\java_basics\\FilesAndNetwork\\homework_5\\src\\main\\resources";
+    private static final String pathTarget = "D:\\skilbox\\java_basics\\FilesAndNetwork\\homework_5\\src\\main\\resources";
     private static final JsonCreate jsonCreate = new JsonCreate();
 
     public static void main(String[] args) throws IOException {
         Document document = Jsoup.connect(pathSource).get();
-        getLinesAndStation(document);
+        getLinesStationsConnections(document);
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper
@@ -29,9 +29,11 @@ public class Main {
         JsonNode stationsNode = rootNode.path("stations");
         Map <String, List> stationsMap = objectMapper.convertValue(stationsNode, new TypeReference<Map<String, List>>() {});
         stationsMap.forEach((o1, o2) -> System.out.println("stations: " + o1 + " count " + o2.size()));
+
+        System.out.println("количество станций с переходами: " + jsonCreate.getConnections().size());
     }
 
-    private static void getLinesAndStation (Document document) {
+    private static void getLinesStationsConnections (Document document) {
         Elements parsedLines = document.select("span.js-metro-line");
 
         for (Element line : parsedLines) {
@@ -39,12 +41,20 @@ public class Main {
             jsonCreate.setLines(lineNumber, line.text());
 
             ArrayList<String> stationsList= new ArrayList<>();
-            Elements parsedStations = document.select("div.js-metro-stations[data-line=" +
-                    lineNumber + "] > p > span.name");
+            String parserIndex = "div.js-metro-stations[data-line=" + lineNumber + "] > p > span.";
+            Elements parsedStations = document.select(parserIndex+ "name");
             for (Element station : parsedStations) {
                 stationsList.add(station.text());
             }
             jsonCreate.setStations(lineNumber, stationsList);
+
+            Elements parsedConnections = document.select(parserIndex + "t-icon-metroln");
+            for (Element connection : parsedConnections){
+                jsonCreate.setConnections(connection.attr("title"), lineNumber);
+            }
+
+
+
         }
     }
 }
