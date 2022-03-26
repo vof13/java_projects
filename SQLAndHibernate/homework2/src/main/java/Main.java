@@ -16,9 +16,12 @@ public class Main {
         Session session = sessionFactory.openSession();
 
         Student student = session.get(Student.class, 3);
+        Course course = session.get(Course.class, 30);
 
         System.out.printf("\nИмя студента: %s, возраст: %d, дата поступления %tD\n",
                 student.getName(), student.getAge(), student.getRegistrationDate());
+
+        System.out.println("Курс: " + course.getName() + ", количество студентов: " + course.getStudentsCount());
 
         sessionFactory.close();
     }
