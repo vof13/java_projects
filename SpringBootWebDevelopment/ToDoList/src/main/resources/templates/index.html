@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ToDo List</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src='/js/todo.js'></script>
+</head>
+
+<body>
+    <div class="todos-list">
+        <span th:text="${todosCount}">0</span>
+        <div th:each="todo : ${todos}">
+           <a href="#" th:attr="data-id = ${todo.getId()}" th:text = "${todo.getName()}"></a>
+        </div>
+    </div>
+
+    <section class="controls">
+        <label>
+            <textarea class="add-todo"></textarea>
+        </label>
+        <button class="save-todo">Отправить</button>
+    </section>
+</body>
+</html>
